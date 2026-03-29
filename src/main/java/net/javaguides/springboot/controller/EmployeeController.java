@@ -1,5 +1,6 @@
 package net.javaguides.springboot.controller;
 
+import jakarta.validation.Valid;
 import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.service.EmployeeService;
@@ -26,8 +27,8 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee){
-        return employeeService.createEmployee(employee);
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee){
+        return new ResponseEntity<>(employeeService.createEmployee(employee),HttpStatus.CREATED);
     }
 
     //build get employee by Id Rest API
@@ -38,7 +39,7 @@ public class EmployeeController {
 
     //build update employee REST API
     @PutMapping("{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable long id, @RequestBody Employee employeeDetails){
+    public ResponseEntity<Employee> updateEmployee(@PathVariable long id,@Valid @RequestBody Employee employeeDetails){
         return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDetails));
     }
 
