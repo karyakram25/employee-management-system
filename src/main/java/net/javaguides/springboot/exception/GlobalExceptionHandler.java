@@ -33,6 +33,11 @@ public class GlobalExceptionHandler {
     // 🔴 Handle Generic Errors
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGlobalException(Exception ex){
+        System.out.println("ERROR OCCURRED: " + ex.getMessage());
+
+        // Optional: print full stack trace (VERY useful)
+//        ex.printStackTrace();
+
         return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -1,6 +1,7 @@
 package net.javaguides.springboot.controller;
 
 import jakarta.validation.Valid;
+import net.javaguides.springboot.dto.EmployeeDto;
 import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.service.EmployeeService;
@@ -22,24 +23,26 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees(){
+    public List<EmployeeDto> getAllEmployees(){
         return employeeService.getAllEmployees();
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee){
-        return new ResponseEntity<>(employeeService.createEmployee(employee),HttpStatus.CREATED);
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto){
+        EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
+//        System.out.println(employeeDto);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
     //build get employee by Id Rest API
     @GetMapping("{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable long id){
+    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id){
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
     //build update employee REST API
     @PutMapping("{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable long id,@Valid @RequestBody Employee employeeDetails){
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id,@Valid @RequestBody EmployeeDto employeeDetails){
         return ResponseEntity.ok(employeeService.updateEmployee(id, employeeDetails));
     }
 

@@ -1,6 +1,8 @@
 package net.javaguides.springboot.service;
 
+import net.javaguides.springboot.dto.EmployeeDto;
 import net.javaguides.springboot.exception.ResourceNotFoundException;
+import net.javaguides.springboot.mapper.EmployeeMapper;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -19,35 +21,42 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getAllEmployees() {
+        return employeeRepository.findAll()
+                .stream()
+                .map(EmployeeMapper::mapToEmployeeDto)
+                .toList();
     }
 
     @Override
-    public Employee createEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
+        Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+        Employee savedEmployee = employeeRepository.save(employee);
+        return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
-
     @Override
-    public Employee getEmployeeById(long id) {
-        return employeeRepository.findById(id)
+    public EmployeeDto getEmployeeById(Long id) {
+         Employee emp=employeeRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Employee does not exist with id: "+id));
+        return EmployeeMapper.mapToEmployeeDto(emp);
     }
 
     @Override
-    public Employee updateEmployee(long id, Employee employeeDetails) {
-        Employee updateEmployee = employeeRepository.findById(id)
+    public EmployeeDto updateEmployee(Long id, EmployeeDto dto) {
+        Employee emp = employeeRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Employee does not exist with id : "+id));
 
-        updateEmployee.setFirstName(employeeDetails.getFirstName());
-        updateEmployee.setLastName(employeeDetails.getLastName());
-        updateEmployee.setEmailId(employeeDetails.getEmailId());
+        emp.setFirstName(dto.getFirstName());
+        emp.setLastName(dto.getLastName());
+        emp.setEmailId(dto.getEmailId());
 
-        return employeeRepository.save(updateEmployee);
+        Employee updated = employeeRepository.save(emp);
+
+        return EmployeeMapper.mapToEmployeeDto(updated);
     }
 
     @Override
-    public void deleteEmployee(long id) {
+    public void deleteEmployee(Long id) {
         Employee employee= employeeRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Employee does not exist with id: "+id));
         employeeRepository.delete(employee);
