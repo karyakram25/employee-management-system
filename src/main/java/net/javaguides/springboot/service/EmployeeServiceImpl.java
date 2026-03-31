@@ -5,6 +5,10 @@ import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.mapper.EmployeeMapper;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.repository.EmployeeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +25,22 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 
     @Override
-    public List<EmployeeDto> getAllEmployees() {
-        return employeeRepository.findAll()
-                .stream()
-                .map(EmployeeMapper::mapToEmployeeDto)
-                .toList();
+    public Page<EmployeeDto> getAllEmployees(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc")?
+                Sort.by(sortBy).ascending():
+                Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+
+        Page<Employee> employees =employeeRepository.findAll(pageable);
+
+        return employees.map(emp->  EmployeeMapper.mapToEmployeeDto(emp));
+
+
+//        return employeeRepository.findAll()
+//                .stream()
+//                .map(EmployeeMapper::mapToEmployeeDto)
+//                .toList();
     }
 
     @Override
