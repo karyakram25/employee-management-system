@@ -4,17 +4,22 @@ A Spring Boot based Employee Management System that provides REST APIs to perfor
 
 ## Tech Stack
 
-* Spring Boot
 * Java
+* Spring Boot
+* Spring Data JPA (Hibernate)
 * MySQL
-* JPA / Hibernate
+* Spring Security
+* Maven
 
 ## Features
 
-* Create Employee
-* Read Employee
-* Update Employee
-* Delete Employee
+* Create, Read, Update, Delete (CRUD) Employee
+* DTO Layer (Clean API structure)
+* Pagination & Sorting
+* Logging using SLF4J
+* Global Exception Handling
+* Spring Security (Basic Authentication)
+* Role-based Access Control (USER, ADMIN)
 
 ## API Endpoints
 
