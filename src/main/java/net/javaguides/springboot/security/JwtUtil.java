@@ -1,0 +1,34 @@
+package net.javaguides.springboot.security;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+
+import java.security.Key;
+import java.util.Date;
+
+public class JwtUtil {
+    private static final String SECRET = "mysecretkeymysecretkeymysecretkey"; // long key
+    private static final Key KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
+
+    public static String generateToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hr
+                .signWith(KEY)
+                .compact();
+    }
+
+    public static String extractUsername(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public static boolean validateToken(String token, String username) {
+        return extractUsername(token).equals(username);
+    }
+}
