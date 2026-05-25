@@ -1,6 +1,7 @@
 package net.javaguides.springboot.employee.controller;
 
 import jakarta.validation.Valid;
+import net.javaguides.springboot.employee.dto.APIResponseDto;
 import net.javaguides.springboot.employee.dto.EmployeeDto;
 import net.javaguides.springboot.employee.service.EmployeeService;
 import org.springframework.data.domain.Page;
@@ -50,9 +51,17 @@ public class EmployeeController {
     }
 
     //build get employee by Id Rest API
-    @GetMapping("{id}")
+//    @GetMapping("{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id){
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    }
+    @GetMapping("{id}")
+    public ResponseEntity<APIResponseDto> getEmployeeWithDepartment(@PathVariable("id") Long employeeId) {
+
+        APIResponseDto apiResponseDto =
+                employeeService.getEmployeeWithDepartment(employeeId);
+
+        return ResponseEntity.ok(apiResponseDto);
     }
 
     //build update employee REST API

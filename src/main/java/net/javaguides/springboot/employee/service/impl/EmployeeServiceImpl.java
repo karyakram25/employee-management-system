@@ -1,5 +1,8 @@
 package net.javaguides.springboot.employee.service.impl;
 
+import net.javaguides.springboot.department.dto.DepartmentDto;
+import net.javaguides.springboot.department.service.DepartmentService;
+import net.javaguides.springboot.employee.dto.APIResponseDto;
 import net.javaguides.springboot.employee.dto.EmployeeDto;
 import net.javaguides.springboot.employee.service.EmployeeService;
 import net.javaguides.springboot.common.exception.ResourceNotFoundException;
@@ -21,12 +24,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentService departmentService;
+
     //Adding logger
     private static final Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 
     //constructor injection
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, DepartmentService departmentService) {
         this.employeeRepository = employeeRepository;
+        this.departmentService = departmentService;
     }
 
 
@@ -71,6 +77,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         return EmployeeMapper.mapToEmployeeDto(emp);
     }
 
+    public APIResponseDto getEmployeeWithDepartment(Long id){
+        Employee emp=employeeRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Employee does not exist with id: "+id));
+
+        EmployeeDto employeeDto= EmployeeMapper.mapToEmployeeDto(emp);
+
+        DepartmentDto departmentDto = departmentService.getDepartmentById(emp.getDepartmentId());
+
+        APIResponseDto apiResponseDto= new APIResponseDto();
+
+        apiResponseDto.setEmployee(employeeDto);
+        apiResponseDto.setDepartment(departmentDto);
+
+        return apiResponseDto;
+    }
     @Override
     public EmployeeDto updateEmployee(Long id, EmployeeDto dto) {
 
@@ -103,4 +124,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         log.info("Employee deleted with ID: {}",id);
     }
+
+
 }
